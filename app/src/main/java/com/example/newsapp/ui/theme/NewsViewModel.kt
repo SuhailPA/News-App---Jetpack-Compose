@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class NewsViewModel(val repository: NewsRepository) : ViewModel() {
+class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
 
     init {
         viewModelScope.launch {
