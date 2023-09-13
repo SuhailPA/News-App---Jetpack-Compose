@@ -3,8 +3,10 @@ package com.example.newsapp.ui.theme
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newsapp.data.model.Article
+import com.example.newsapp.data.model.NewsResponseModel
 import com.example.newsapp.data.model.NewsTable
 import com.example.newsapp.data.repository.NewsRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn

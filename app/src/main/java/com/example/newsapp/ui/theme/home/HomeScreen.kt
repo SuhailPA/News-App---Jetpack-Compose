@@ -1,6 +1,8 @@
 package com.example.newsapp.ui.theme.home
 
 import android.annotation.SuppressLint
+import android.net.Network
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +20,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,8 +36,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -61,12 +67,17 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             NewsTopAppBar(
-                title = NewsAppScreens.HOME.name,
+                title = "News App",
                 scrollBehavior = scrollBehavior,
                 canNavigateBack = false,
             ) {}
         }) { innerPadding ->
-        NewsList(news = newsUiState.value, modifier = Modifier.padding(innerPadding))
+        if (newsUiState.value.isNotEmpty()) {
+            NewsList(news = newsUiState.value, modifier = Modifier.padding(innerPadding))
+        } else {
+            LoadingErrorScreen(modifier = Modifier.padding(innerPadding))
+        }
+
     }
 }
 
@@ -109,7 +120,8 @@ fun TextComposables(modifier: Modifier = Modifier, news: NewsTable) {
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .padding(10.dp),
-            maxLines = 2
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
         )
         Text(
             text = news.publishedAt ?: "",
@@ -144,12 +156,24 @@ fun NewsList(modifier: Modifier = Modifier, news: List<NewsTable>) {
         contentPadding = PaddingValues(5.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
+        item {
+            HorizontalAutoSlider(news = news)
+        }
         items(items = news, key = { news -> news.title!! }) {
             NewsItem(news = it)
         }
     }
 }
 
+@Composable
+fun LoadingErrorScreen(modifier: Modifier = Modifier) {
+    Image(
+        modifier = modifier.fillMaxSize(),
+        painter = painterResource(id = R.drawable.loading),
+        contentDescription = null,
+        contentScale = ContentScale.FillHeight
+    )
+}
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewNewsItem() {

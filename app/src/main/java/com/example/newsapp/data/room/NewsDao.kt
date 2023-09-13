@@ -21,4 +21,7 @@ interface NewsDao {
     @Query("DELETE FROM newstable")
     suspend fun deleteAllNews()
 
+    @Query("SELECT * FROM newstable LIMIT 1")
+    suspend fun getFirstItem() : NewsTable
+
 }
