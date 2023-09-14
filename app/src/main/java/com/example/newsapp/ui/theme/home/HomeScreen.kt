@@ -3,6 +3,7 @@ package com.example.newsapp.ui.theme.home
 import android.annotation.SuppressLint
 import android.net.Network
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,11 +60,10 @@ import com.example.newsapp.data.model.NewsTable
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: NewsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    newsData: List<NewsTable>,
+    onItemClick: (NewsTable) -> Unit
 ) {
-
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    val newsUiState = viewModel.newUiState.collectAsState()
     Scaffold(
         topBar = {
             NewsTopAppBar(
@@ -72,8 +72,12 @@ fun HomeScreen(
                 canNavigateBack = false,
             ) {}
         }) { innerPadding ->
-        if (newsUiState.value.isNotEmpty()) {
-            NewsList(news = newsUiState.value, modifier = Modifier.padding(innerPadding))
+        if (newsData.isNotEmpty()) {
+            NewsList(
+                news = newsData,
+                modifier = Modifier.padding(innerPadding),
+                onItemClick = onItemClick
+            )
         } else {
             LoadingErrorScreen(modifier = Modifier.padding(innerPadding))
         }
@@ -82,11 +86,12 @@ fun HomeScreen(
 }
 
 @Composable
-fun NewsItem(modifier: Modifier = Modifier, news: NewsTable) {
+fun NewsItem(modifier: Modifier = Modifier, news: NewsTable, onItemClick: (NewsTable) -> Unit) {
     val context = LocalContext.current
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .clickable { onItemClick(news) }
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -150,17 +155,21 @@ fun AuthorDetails(authorName: String?) {
 }
 
 @Composable
-fun NewsList(modifier: Modifier = Modifier, news: List<NewsTable>) {
+fun NewsList(
+    modifier: Modifier = Modifier,
+    news: List<NewsTable>,
+    onItemClick: (NewsTable) -> Unit
+) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(5.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         item {
-            HorizontalAutoSlider(news = news)
+            HorizontalAutoSlider(news = news, onItemClick = onItemClick)
         }
         items(items = news, key = { news -> news.title!! }) {
-            NewsItem(news = it)
+            NewsItem(news = it, onItemClick = onItemClick)
         }
     }
 }
@@ -174,6 +183,7 @@ fun LoadingErrorScreen(modifier: Modifier = Modifier) {
         contentScale = ContentScale.FillHeight
     )
 }
+
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewNewsItem() {
@@ -186,6 +196,6 @@ fun PreviewNewsItem() {
             title = "Test Title",
             url = "Test URl",
             urlToImage = "Test Image"
-        )
+        ), onItemClick = {}
     )
 }

@@ -17,3 +17,16 @@ data class NewsTable(
     val url: String?,
     val urlToImage: String?
 )
+
+data class NewsUiState(
+    val selectedItem: NewsTable = NewsTable(
+        id = 0,
+        author = "",
+        content = "",
+        description = "",
+        publishedAt = "",
+        title = "",
+        url = "",
+        urlToImage = ""
+    ),
+)

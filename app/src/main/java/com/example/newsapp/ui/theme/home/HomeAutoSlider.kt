@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,7 +42,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HorizontalAutoSlider(modifier: Modifier = Modifier, news: List<NewsTable>) {
+fun HorizontalAutoSlider(
+    modifier: Modifier = Modifier,
+    news: List<NewsTable>,
+    onItemClick: (NewsTable) -> Unit
+) {
     val pager = rememberPagerState(
         initialPage = 0,
         initialPageOffsetFraction = 0f
@@ -56,7 +61,7 @@ fun HorizontalAutoSlider(modifier: Modifier = Modifier, news: List<NewsTable>) {
             targetValue = if (pageOffSet.toDouble() != 0.0) 0.75f else 1f,
             animationSpec = tween(300), label = ""
         )
-        Box {
+        Box(modifier = Modifier.clickable { onItemClick(news[index]) }) {
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
