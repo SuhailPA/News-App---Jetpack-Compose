@@ -49,17 +49,17 @@ fun DetailScreen(
     newsItem: NewsTable,
     navigateUp: () -> Unit
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    Scaffold(topBar = {
-        NewsTopAppBar(
-            title = NewsAppScreens.DETAIL.name,
-            canNavigateBack = true,
-            scrollBehavior = scrollBehavior
-        ) {
-            navigateUp()
-        }
-    }) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
+//    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+//    Scaffold(topBar = {
+//        NewsTopAppBar(
+//            title = NewsAppScreens.DETAIL.name,
+//            canNavigateBack = true,
+//            scrollBehavior = scrollBehavior
+//        ) {
+//            navigateUp()
+//        }
+//    }) { innerPadding ->
+        Column(modifier = Modifier.padding()) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(newsItem.urlToImage)
@@ -82,7 +82,7 @@ fun DetailScreen(
                     .wrapContentHeight(align = Alignment.Bottom)
             )
         }
-    }
+//    }
 }
 
 @Composable

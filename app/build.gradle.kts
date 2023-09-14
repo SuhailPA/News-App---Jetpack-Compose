@@ -88,4 +88,7 @@ dependencies {
 
     //Coil
     implementation ("io.coil-kt:coil-compose:2.4.0")
+
+    //Animated BottomBar
+    implementation("com.exyte:animated-navigation-bar:1.0.0")
 }

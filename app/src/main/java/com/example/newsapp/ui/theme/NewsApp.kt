@@ -15,8 +15,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.newsapp.ui.theme.navigation.NewsAppScreens
 import com.example.newsapp.ui.theme.navigation.NewsNavigation
 
 
@@ -30,7 +32,7 @@ fun NewsApp(navController: NavHostController = rememberNavController()) {
 @Composable
 fun NewsTopAppBar(
     modifier: Modifier = Modifier,
-    title: String,
+    newScreen: NewsAppScreens,
     canNavigateBack: Boolean,
     scrollBehavior: TopAppBarScrollBehavior,
     onNavigateUp: () -> Unit
@@ -38,7 +40,7 @@ fun NewsTopAppBar(
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = title,
+                text = newScreen.name,
                 style = MaterialTheme.typography.titleLarge
             )
         },
