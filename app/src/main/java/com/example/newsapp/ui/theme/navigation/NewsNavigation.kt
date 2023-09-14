@@ -30,6 +30,7 @@ fun NewsNavigation(
         startDestination = NewsAppScreens.HOME.name,
         modifier = modifier
     ) {
+
         composable(route = NewsAppScreens.HOME.name) {
             HomeScreen(newsData = newsState.value, onItemClick = {
                 viewModel.updateCurrentItem(newsTable = it)

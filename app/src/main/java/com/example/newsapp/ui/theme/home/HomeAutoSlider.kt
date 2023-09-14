@@ -1,5 +1,7 @@
 package com.example.newsapp.ui.theme.home
 
+import android.util.Log
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -30,13 +32,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.newsapp.R
 import com.example.newsapp.data.model.NewsTable
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -51,7 +56,7 @@ fun HorizontalAutoSlider(
         initialPage = 0,
         initialPageOffsetFraction = 0f
     ) {
-        3
+        news.size - 1
     }
     HorizontalPager(state = pager, modifier.height(200.dp), reverseLayout = false) { index ->
 
@@ -72,6 +77,8 @@ fun HorizontalAutoSlider(
                         shape = RoundedCornerShape(15.dp)
                         clip = true
                     },
+                error = painterResource(id = R.drawable.breaking_news_placeholder),
+                placeholder = painterResource(id = R.drawable.breaking_news_placeholder),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(news[index].urlToImage)
                     .build(),
@@ -98,14 +105,19 @@ fun HorizontalAutoSlider(
                 maxLines = 2
             )
         }
-        var key by remember { mutableStateOf(false) }
+        val key by remember { mutableStateOf(false) }
         LaunchedEffect(key1 = key) {
-            while (index < news.size) {
-                delay(5000)
-                val nextPage = (pager.currentPage + 1)
-                this.launch {
-                    pager.animateScrollToPage(pager.currentPage + 1)
-                    key = !key
+            launch {
+                delay(3000)
+                with(pager) {
+                    val target = if (currentPage < pageCount - 1) currentPage + 1 else 0
+                    animateScrollToPage(
+                        page = target,
+                        animationSpec = tween(
+                            durationMillis = 500,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
                 }
             }
         }

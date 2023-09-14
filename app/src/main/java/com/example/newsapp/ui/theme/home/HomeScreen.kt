@@ -91,7 +91,8 @@ fun NewsItem(modifier: Modifier = Modifier, news: NewsTable, onItemClick: (NewsT
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onItemClick(news) }
+            .clickable { onItemClick(news) },
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -163,7 +164,7 @@ fun NewsList(
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(5.dp),
-        verticalArrangement = Arrangement.spacedBy(5.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         item {
             HorizontalAutoSlider(news = news, onItemClick = onItemClick)
