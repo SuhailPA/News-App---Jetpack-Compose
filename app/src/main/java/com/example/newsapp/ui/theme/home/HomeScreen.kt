@@ -59,9 +59,7 @@ import com.example.newsapp.ui.theme.navigation.NewsAppScreens
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.size.Scale
 import com.example.newsapp.data.model.NewsTable
-import com.example.newsapp.ui.theme.navigation.NavigationBarItem
-import com.exyte.animatednavbar.AnimatedNavigationBar
-import com.exyte.animatednavbar.utils.noRippleClickable
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,16 +69,6 @@ fun HomeScreen(
     newsData: List<NewsTable>,
     onItemClick: (NewsTable) -> Unit
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
-//    Scaffold(
-//        topBar = {
-//            NewsTopAppBar(
-//                title = "News App",
-//                scrollBehavior = scrollBehavior,
-//                canNavigateBack = false,
-//            ) {}
-//        }) { innerPadding ->
         if (newsData.isNotEmpty()) {
             NewsList(
                 news = newsData,

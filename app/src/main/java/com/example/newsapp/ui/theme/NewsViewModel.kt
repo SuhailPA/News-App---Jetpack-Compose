@@ -7,6 +7,8 @@ import com.example.newsapp.data.model.NewsResponseModel
 import com.example.newsapp.data.model.NewsTable
 import com.example.newsapp.data.model.NewsUiState
 import com.example.newsapp.data.repository.NewsRepository
+import com.example.newsapp.ui.theme.navigation.NavigationItem
+import com.example.newsapp.ui.theme.navigation.NewsAppScreens
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -37,6 +39,23 @@ class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
             currentState.copy(
                 selectedItem = newsTable
             )
+        }
+    }
+
+    fun updateCurrentScreen(currentScreen: NewsAppScreens) {
+        _newsUiState.update { currentState ->
+            currentState.copy(
+                currentScreen = currentScreen
+            )
+        }
+    }
+
+    fun updateBackButton(value: Boolean) {
+        _newsUiState.update { currentState ->
+            currentState.copy(
+                showBackButton = value
+            )
+
         }
     }
 }

@@ -2,6 +2,8 @@ package com.example.newsapp.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.newsapp.ui.theme.navigation.NavigationItem
+import com.example.newsapp.ui.theme.navigation.NewsAppScreens
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -29,4 +31,8 @@ data class NewsUiState(
         url = "",
         urlToImage = ""
     ),
+    val isShowingHomePage : Boolean = true,
+    val currentNavigationItem : NavigationItem = NavigationItem.home,
+    val currentScreen : NewsAppScreens = NewsAppScreens.HOME,
+    val showBackButton : Boolean = false
 )

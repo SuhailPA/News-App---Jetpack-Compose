@@ -17,7 +17,7 @@ class NewsRepository(val newsDao: NewsDao, val newsAPI: NewsAPI) : NewsRepoImpl 
                 newsAPI.getAllNews(country = "in", apiKey = "857417c014944bc7b92fcbd3cf22c8a1")
             if (news.isSuccessful && news.body()?.status == "ok") {
                 news.body()?.articles?.let {
-                    if (it[0].title?.equals(newsDao.getFirstItem().title) == false) {
+                    if (it[0].title?.equals(newsDao.getFirstItem()?.title) == false || newsDao.getFirstItem() == null) {
                         newsDao.deleteAllNews()
                         newsDao.updateNews(it)
                     }

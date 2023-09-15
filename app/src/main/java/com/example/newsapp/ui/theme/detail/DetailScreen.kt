@@ -2,6 +2,7 @@ package com.example.newsapp.ui.theme.detail
 
 import android.graphics.Paint.Align
 import android.widget.Space
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,16 +50,9 @@ fun DetailScreen(
     newsItem: NewsTable,
     navigateUp: () -> Unit
 ) {
-//    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-//    Scaffold(topBar = {
-//        NewsTopAppBar(
-//            title = NewsAppScreens.DETAIL.name,
-//            canNavigateBack = true,
-//            scrollBehavior = scrollBehavior
-//        ) {
-//            navigateUp()
-//        }
-//    }) { innerPadding ->
+    BackHandler {
+        navigateUp()
+    }
         Column(modifier = Modifier.padding()) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
