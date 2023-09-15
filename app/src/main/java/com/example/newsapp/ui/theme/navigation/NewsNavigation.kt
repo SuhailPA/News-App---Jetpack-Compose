@@ -78,22 +78,21 @@ fun NewsNavigation(
     )
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(topBar = {
-        NewsTopAppBar(newScreen = currentScreen,
-            scrollBehavior = scrollBehavior,
-            canNavigateBack = componentUiState.value.showBackButton,
-            onNavigateUp = {
-                navController.navigateUp()
-                viewModel.updateBackButton(value = false)
-            })
+        if (navController.currentDestination?.route != NewsAppScreens.DETAIL.name)
+            NewsTopAppBar(
+                newScreen = currentScreen,
+                scrollBehavior = scrollBehavior
+            )
     }, bottomBar = {
-        if (navController.currentDestination?.route != NewsAppScreens.DETAIL.name) BottomNavigationBar(currentScreen = currentScreen,
-            onTabPressed = {
-                viewModel.updateBackButton(value = false)
-                navController.navigate(it.name) {
-                    popUpTo(navController.graph.startDestinationId)
-                    launchSingleTop = true
-                }
-            })
+        if (navController.currentDestination?.route != NewsAppScreens.DETAIL.name)
+            BottomNavigationBar(
+                currentScreen = currentScreen,
+                onTabPressed = {
+                    navController.navigate(it.name) {
+                        popUpTo(navController.graph.startDestinationId)
+                        launchSingleTop = true
+                    }
+                })
     }) { innerPadding ->
         NavHost(
             navController = navController,
@@ -104,22 +103,28 @@ fun NewsNavigation(
                 HomeScreen(newsData = newsState.value, onItemClick = {
                     viewModel.updateCurrentItem(newsTable = it)
                     navController.navigate(route = NewsAppScreens.DETAIL.name)
-                    viewModel.updateBackButton(value = true)
+
                 })
             }
 
             composable(route = NewsAppScreens.DETAIL.name) {
-                DetailScreen(newsItem = componentUiState.value.selectedItem, navigateUp = {
-                    viewModel.updateBackButton(value = false)
+                DetailScreen(newsUiState = componentUiState.value, navigateUp = {
                     navController.navigateUp()
 
+                }, addedToFavorite = {
+                    viewModel.triggeredFavorite(it)
                 })
             }
             composable(route = NewsAppScreens.SEARCH.name) {
                 SearchScreen()
             }
             composable(route = NewsAppScreens.BOOKMARKS.name) {
-                BookMarkScreen()
+                BookMarkScreen(favouriteList = newsState.value.filter {
+                    it.favourite
+                }, onItemClick = {
+                    viewModel.updateCurrentItem(it)
+                    navController.navigate(NewsAppScreens.DETAIL.name)
+                })
             }
         }
     }

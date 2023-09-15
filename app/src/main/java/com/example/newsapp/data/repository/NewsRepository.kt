@@ -28,4 +28,8 @@ class NewsRepository(val newsDao: NewsDao, val newsAPI: NewsAPI) : NewsRepoImpl 
         }
 
     }
+
+    override suspend fun triggeredFavorite(newsTable: NewsTable) {
+        newsDao.triggeredFavorite(newsTable)
+    }
 }

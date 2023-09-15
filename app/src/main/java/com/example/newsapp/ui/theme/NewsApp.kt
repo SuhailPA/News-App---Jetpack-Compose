@@ -33,9 +33,7 @@ fun NewsApp(navController: NavHostController = rememberNavController()) {
 fun NewsTopAppBar(
     modifier: Modifier = Modifier,
     newScreen: NewsAppScreens,
-    canNavigateBack: Boolean,
-    scrollBehavior: TopAppBarScrollBehavior,
-    onNavigateUp: () -> Unit
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -46,15 +44,6 @@ fun NewsTopAppBar(
         },
         scrollBehavior = scrollBehavior,
         modifier = modifier,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = { onNavigateUp() }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack, contentDescription = "Back"
-                    )
-                }
-            }
-        },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,

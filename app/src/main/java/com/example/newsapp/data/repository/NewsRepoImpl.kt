@@ -9,4 +9,7 @@ interface NewsRepoImpl {
     fun getAllNews(): Flow<List<NewsTable>>
 
     suspend fun updateNewsContent()
+
+    suspend fun triggeredFavorite(newsTable: NewsTable)
+
 }

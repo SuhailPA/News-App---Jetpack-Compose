@@ -17,7 +17,8 @@ data class NewsTable(
     val publishedAt: String?,
     val title: String?,
     val url: String?,
-    val urlToImage: String?
+    val urlToImage: String?,
+    var favourite : Boolean = false
 )
 
 data class NewsUiState(
@@ -29,7 +30,8 @@ data class NewsUiState(
         publishedAt = "",
         title = "",
         url = "",
-        urlToImage = ""
+        urlToImage = "",
+        favourite = false
     ),
     val isShowingHomePage : Boolean = true,
     val currentNavigationItem : NavigationItem = NavigationItem.home,

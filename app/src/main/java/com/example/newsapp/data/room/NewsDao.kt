@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.example.newsapp.data.model.Article
 import com.example.newsapp.data.model.NewsResponseModel
 import com.example.newsapp.data.model.NewsTable
@@ -14,14 +15,18 @@ import kotlinx.coroutines.flow.Flow
 interface NewsDao {
 
     @Insert
-    suspend fun updateNews(news : List<NewsTable>)
+    suspend fun updateNews(news: List<NewsTable>)
+
     @Query("SELECT * FROM newstable")
-    fun getAllNews() : Flow<List<NewsTable>>
+    fun getAllNews(): Flow<List<NewsTable>>
 
     @Query("DELETE FROM newstable")
     suspend fun deleteAllNews()
 
     @Query("SELECT * FROM newstable LIMIT 1")
-    suspend fun getFirstItem() : NewsTable?
+    suspend fun getFirstItem(): NewsTable?
+
+    @Update
+    suspend fun triggeredFavorite(newsTable: NewsTable)
 
 }

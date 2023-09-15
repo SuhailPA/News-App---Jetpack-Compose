@@ -1,8 +1,10 @@
 package com.example.newsapp.ui.theme.detail
 
+import android.graphics.Color.alpha
 import android.graphics.Paint.Align
 import android.widget.Space
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,15 +13,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -40,23 +50,31 @@ import coil.request.ImageRequest
 import com.example.newsapp.AppViewModelProvider
 import com.example.newsapp.R
 import com.example.newsapp.data.model.NewsTable
+import com.example.newsapp.data.model.NewsUiState
 import com.example.newsapp.ui.theme.NewsTopAppBar
 
 import com.example.newsapp.ui.theme.navigation.NewsAppScreens
+import okhttp3.internal.wait
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun DetailScreen(
-    newsItem: NewsTable,
-    navigateUp: () -> Unit
+    newsUiState: NewsUiState,
+    navigateUp: () -> Unit,
+    addedToFavorite: (Boolean) -> Unit
 ) {
     BackHandler {
         navigateUp()
     }
-        Column(modifier = Modifier.padding()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        Column {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(newsItem.urlToImage)
+                    .data(newsUiState.selectedItem.urlToImage)
                     .build(),
                 error = painterResource(id = R.drawable.breaking_news_placeholder),
                 placeholder = painterResource(id = R.drawable.breaking_news_placeholder),
@@ -67,16 +85,60 @@ fun DetailScreen(
                     .clip(shape = RoundedCornerShape(bottomEnd = 25.dp, bottomStart = 15.dp)),
                 contentScale = ContentScale.Crop
             )
-            NewsTimeAndSource(newsItem = newsItem, modifier = Modifier.weight(0.5f))
+            NewsTimeAndSource(newsItem = newsUiState.selectedItem, modifier = Modifier.weight(0.5f))
             TextDescription(
-                newState = newsItem,
+                newState = newsUiState.selectedItem,
                 modifier = Modifier
                     .weight(2f)
                     .fillMaxWidth()
                     .wrapContentHeight(align = Alignment.Bottom)
             )
         }
-//    }
+        HeaderPart(navigateUp = navigateUp, isFavourite = newsUiState.selectedItem.favourite, addedToFavorite = addedToFavorite)
+    }
+}
+
+
+@Composable
+fun HeaderPart(modifier: Modifier = Modifier, navigateUp: () -> Unit, isFavourite: Boolean, addedToFavorite: (Boolean) -> Unit) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        IconButton(
+            onClick = { navigateUp() },
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(15.dp)
+                .size(36.dp)
+                .background(
+                    color = Color.White.copy(alpha = 0.75f),
+                    shape = RoundedCornerShape(20.dp)
+                )
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "BackButton",
+                modifier = Modifier
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(
+            onClick = { addedToFavorite(!isFavourite) },
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(15.dp)
+                .size(36.dp)
+                .background(
+                    color = Color.White.copy(alpha = 0.75f),
+                    shape = RoundedCornerShape(20.dp)
+                )
+        ) {
+            Icon(
+                imageVector = if (isFavourite) Icons.Default.Favorite
+                else Icons.Default.FavoriteBorder,
+                contentDescription = "BackButton",
+                modifier = Modifier
+            )
+        }
+    }
 }
 
 @Composable
@@ -133,19 +195,19 @@ fun TextDescription(modifier: Modifier = Modifier, newState: NewsTable) {
     }
 }
 
-@Preview
-@Composable
-fun PreviewDetailScreen() {
-    DetailScreen(
-        newsItem = NewsTable(
-            id = 0,
-            description = LocalContext.current.getString(R.string.dummy_description),
-            author = "Suhail P A",
-            content = "",
-            publishedAt = "",
-            title = "TestTitle",
-            url = "",
-            urlToImage = ""
-        )
-    ) {}
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun PreviewDetailScreen() {
+//    DetailScreen(
+//        newsItem = NewsTable(
+//            id = 0,
+//            description = LocalContext.current.getString(R.string.dummy_description),
+//            author = "Suhail P A",
+//            content = "",
+//            publishedAt = "",
+//            title = "TestTitle",
+//            url = "",
+//            urlToImage = ""
+//        ),
+//        {},{})
+//}
