@@ -78,21 +78,18 @@ fun NewsNavigation(
     )
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(topBar = {
-        if (navController.currentDestination?.route != NewsAppScreens.DETAIL.name)
-            NewsTopAppBar(
-                newScreen = currentScreen,
-                scrollBehavior = scrollBehavior
-            )
+        if (navController.currentDestination?.route != NewsAppScreens.DETAIL.name) NewsTopAppBar(
+            newScreen = currentScreen, scrollBehavior = scrollBehavior
+        )
     }, bottomBar = {
-        if (navController.currentDestination?.route != NewsAppScreens.DETAIL.name)
-            BottomNavigationBar(
-                currentScreen = currentScreen,
-                onTabPressed = {
-                    navController.navigate(it.name) {
-                        popUpTo(navController.graph.startDestinationId)
-                        launchSingleTop = true
-                    }
-                })
+        if (navController.currentDestination?.route != NewsAppScreens.DETAIL.name) BottomNavigationBar(
+            currentScreen = currentScreen,
+            onTabPressed = {
+                navController.navigate(it.name) {
+                    popUpTo(navController.graph.startDestinationId)
+                    launchSingleTop = true
+                }
+            })
     }) { innerPadding ->
         NavHost(
             navController = navController,
@@ -116,7 +113,14 @@ fun NewsNavigation(
                 })
             }
             composable(route = NewsAppScreens.SEARCH.name) {
-                SearchScreen()
+                SearchScreen(componentUiState = componentUiState.value,
+                    onValueUpdated = {
+                        viewModel.updateSearchTextValue(it)
+                    },
+                    onSearchClicked = {},
+                    searchBarActiveUpdated = {
+                        viewModel.updateSearchActiveButton(it)
+                    })
             }
             composable(route = NewsAppScreens.BOOKMARKS.name) {
                 BookMarkScreen(favouriteList = newsState.value.filter {

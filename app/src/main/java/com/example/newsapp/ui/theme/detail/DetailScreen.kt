@@ -81,15 +81,15 @@ fun DetailScreen(
                 contentDescription = "",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(2f)
+                    .weight(2.5f)
                     .clip(shape = RoundedCornerShape(bottomEnd = 25.dp, bottomStart = 15.dp)),
                 contentScale = ContentScale.Crop
             )
-            NewsTimeAndSource(newsItem = newsUiState.selectedItem, modifier = Modifier.weight(0.5f))
+            NewsTimeAndSource(newsItem = newsUiState.selectedItem, modifier = Modifier.weight(0.3f))
             TextDescription(
                 newState = newsUiState.selectedItem,
                 modifier = Modifier
-                    .weight(2f)
+                    .weight(1.7f)
                     .fillMaxWidth()
                     .wrapContentHeight(align = Alignment.Bottom)
             )

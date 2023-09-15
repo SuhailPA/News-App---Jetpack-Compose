@@ -42,18 +42,32 @@ class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
         }
     }
 
-     fun triggeredFavorite(favourite: Boolean) {
-         viewModelScope.launch {
-             _newsUiState.update {
-                 currentState ->
-                 currentState.copy(
-                     selectedItem = newsUiState.value.selectedItem.copy(
-                         favourite = favourite
-                     )
-                 )
-             }
-             repository.triggeredFavorite(_newsUiState.value.selectedItem)
-         }
+    fun triggeredFavorite(favourite: Boolean) {
+        viewModelScope.launch {
+            _newsUiState.update { currentState ->
+                currentState.copy(
+                    selectedItem = newsUiState.value.selectedItem.copy(
+                        favourite = favourite
+                    )
+                )
+            }
+            repository.triggeredFavorite(_newsUiState.value.selectedItem)
+        }
+    }
 
+    fun updateSearchTextValue(text: String) {
+        _newsUiState.update { currentState ->
+            currentState.copy(
+                searchText = text
+            )
+        }
+    }
+
+    fun updateSearchActiveButton(active: Boolean) {
+        _newsUiState.update { currentState ->
+            currentState.copy(
+                searchBarIsActive = active
+            )
+        }
     }
 }

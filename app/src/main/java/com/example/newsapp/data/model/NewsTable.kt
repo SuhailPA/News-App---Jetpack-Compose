@@ -36,5 +36,7 @@ data class NewsUiState(
     val isShowingHomePage : Boolean = true,
     val currentNavigationItem : NavigationItem = NavigationItem.home,
     val currentScreen : NewsAppScreens = NewsAppScreens.HOME,
-    val showBackButton : Boolean = false
+    val showBackButton : Boolean = false,
+    val searchText : String = "",
+    val searchBarIsActive : Boolean = false
 )
