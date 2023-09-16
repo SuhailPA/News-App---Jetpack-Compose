@@ -1,7 +1,12 @@
 package com.example.newsapp.di
 
 import android.content.Context
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.room.Room
+import com.example.newsapp.data.model.NewsTable
+import com.example.newsapp.data.repository.NewsRemoteMediator
 import com.example.newsapp.data.repository.NewsRepository
 import com.example.newsapp.data.retrofit.NewsAPI
 import com.example.newsapp.data.room.NewsRoomDB
@@ -13,9 +18,10 @@ import retrofit2.Retrofit
 interface NewsContainer {
 
     val newsRepository: NewsRepository
+    val pager: Pager<Int, NewsTable>
 }
 
-class NewsDataContainer(val context: Context) : NewsContainer {
+class NewsDataContainer(context: Context) : NewsContainer {
 
     val BASE_URL = "https://newsapi.org/v2/"
     val json = Json { ignoreUnknownKeys = true }
@@ -34,6 +40,20 @@ class NewsDataContainer(val context: Context) : NewsContainer {
 
     override val newsRepository: NewsRepository by lazy {
         NewsRepository(roomDb = roomDB, newsAPI = newsApi)
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override val pager: Pager<Int, NewsTable> by lazy {
+        Pager(
+            config = PagingConfig(pageSize = 20),
+            remoteMediator = NewsRemoteMediator(
+                roomDB = roomDB,
+                newsApi = newsApi
+            ),
+            pagingSourceFactory = {
+                roomDB.newsDao().pagingSource()
+            }
+        )
     }
 
 }

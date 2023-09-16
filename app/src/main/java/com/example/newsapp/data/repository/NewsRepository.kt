@@ -46,7 +46,4 @@ class NewsRepository(private val roomDb: NewsRoomDB, val newsAPI: NewsAPI) : New
         return roomDb.newsDao().getAllHistoryItems()
     }
 
-    override fun getItemForSearch(item: String): Flow<List<NewsTable>> {
-        return roomDb.newsDao().getAllItemForSearch(item)
-    }
 }

@@ -73,6 +73,7 @@ dependencies {
     implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
+    implementation ("androidx.room:room-paging:2.5.2")
 
     //Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
@@ -89,6 +90,7 @@ dependencies {
     //Coil
     implementation ("io.coil-kt:coil-compose:2.4.0")
 
-//    //Animated BottomBar
-//    implementation("com.exyte:animated-navigation-bar:1.0.0")
+    //Pagination
+    implementation ("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation ("androidx.paging:paging-compose:3.2.1")
 }

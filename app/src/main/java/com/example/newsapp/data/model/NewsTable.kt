@@ -9,13 +9,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity
 data class NewsTable(
-    @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val author: String?,
     val content: String?,
     val description: String?,
     val publishedAt: String?,
-    val title: String?,
+    @PrimaryKey
+    val title: String,
     val url: String?,
     val urlToImage: String?,
     var favourite: Boolean = false

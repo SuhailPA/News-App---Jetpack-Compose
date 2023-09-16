@@ -12,4 +12,12 @@ interface NewsAPI {
         @Query("country") country: String,
         @Query("apiKey") apiKey: String
     ): Response<NewsResponseModel>
+
+    @GET("top-headlines")
+    suspend fun getPaginatedNews (
+        @Query("country") country: String,
+        @Query("apiKey") apiKey: String,
+        @Query("pageSize") pageSize :Int,
+        @Query("page") page : Int
+    ): Response<NewsResponseModel>
 }

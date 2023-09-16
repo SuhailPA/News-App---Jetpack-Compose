@@ -3,6 +3,8 @@ package com.example.newsapp.ui.theme
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.cachedIn
 import com.example.newsapp.data.model.HistoryTable
 import com.example.newsapp.data.model.NewsTable
 import com.example.newsapp.data.model.NewsUiState
@@ -16,25 +18,16 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
+class NewsViewModel(
+    private val repository: NewsRepository,
+    pager: Pager<Int, NewsTable>
+) : ViewModel() {
+
+    val pagerFlow = pager.flow.cachedIn(viewModelScope)
 
     private val _newsUiState = MutableStateFlow(NewsUiState())
     val newsUiState: StateFlow<NewsUiState> = _newsUiState
 
-    private val _yourStateFlow = MutableStateFlow<List<NewsTable>>(emptyList())
-    val yourStateFlow: StateFlow<List<NewsTable>> = _yourStateFlow.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            repository.updateNewsContent()
-        }
-    }
-
-    val newUiState: StateFlow<List<NewsTable>> = repository.getAllNews().stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = listOf<NewsTable>()
-    )
 
     val historyItems: StateFlow<List<HistoryTable>> = repository.getAllHistoryItems().stateIn(
         scope = viewModelScope,

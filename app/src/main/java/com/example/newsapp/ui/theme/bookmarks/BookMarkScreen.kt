@@ -1,6 +1,5 @@
 package com.example.newsapp.ui.theme.bookmarks
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,13 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.newsapp.data.model.NewsTable
-import com.example.newsapp.data.model.NewsUiState
 import com.example.newsapp.ui.theme.home.NewsItem
 
 @Composable
 fun BookMarkScreen(
     modifier: Modifier = Modifier,
-    favouriteList: List<NewsTable>,
+    favouriteList: List<NewsTable?>,
     onItemClick: (NewsTable) -> Unit
 ) {
     if (favouriteList.isEmpty()) {
@@ -30,8 +28,10 @@ fun BookMarkScreen(
             modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(5.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            items(items = favouriteList, key = { item -> item.id }) {
-                NewsItem(news = it, onItemClick = { onItemClick(it) })
+            items(items = favouriteList, key = { item -> item?.id!! }) {
+                if (it != null) {
+                    NewsItem(news = it, onItemClick = { onItemClick(it) })
+                }
             }
         }
     }

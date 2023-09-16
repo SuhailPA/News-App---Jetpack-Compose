@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.newsapp.R
@@ -49,80 +50,83 @@ import kotlinx.coroutines.launch
 @Composable
 fun HorizontalAutoSlider(
     modifier: Modifier = Modifier,
-    news: List<NewsTable>,
+    news: LazyPagingItems<NewsTable>,
     onItemClick: (NewsTable) -> Unit
 ) {
-    val pager = rememberPagerState(
-        initialPage = 0,
-        initialPageOffsetFraction = 0f
-    ) {
-        news.size - 1
-    }
-    HorizontalPager(state = pager, modifier.height(200.dp), reverseLayout = false) { index ->
-
-        val pageOffSet = (pager.currentPage - index) + pager.currentPageOffsetFraction
-
-        val imageSize by animateFloatAsState(
-            targetValue = if (pageOffSet.toDouble() != 0.0) 0.75f else 1f,
-            animationSpec = tween(300), label = ""
-        )
-        Box(modifier = Modifier.clickable { onItemClick(news[index]) }) {
-            AsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(15.dp))
-                    .graphicsLayer {
-                        scaleX = imageSize
-                        scaleY = imageSize
-                        shape = RoundedCornerShape(15.dp)
-                        clip = true
-                    },
-                error = painterResource(id = R.drawable.breaking_news_placeholder),
-                placeholder = painterResource(id = R.drawable.breaking_news_placeholder),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(news[index].urlToImage)
-                    .build(),
-                contentDescription = "",
-                contentScale = ContentScale.Crop
-            )
-
-            Text(
-                text = news[index].title.toString(),
-                color = Color.White,
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.7f))
-                    .padding(16.dp)
-                    .graphicsLayer {
-                        scaleX = imageSize
-                        scaleY = imageSize
-                        shape = RoundedCornerShape(15.dp)
-                    },
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 2
-            )
+    if (news.itemCount != 0) {
+        val pager = rememberPagerState(
+            initialPage = 0,
+            initialPageOffsetFraction = 0f
+        ) {
+            news.itemCount - 1
         }
-        val key by remember { mutableStateOf(false) }
-        LaunchedEffect(key1 = key) {
-            launch {
-                delay(3000)
-                with(pager) {
-                    val target = if (currentPage < pageCount - 1) currentPage + 1 else 0
-                    animateScrollToPage(
-                        page = target,
-                        animationSpec = tween(
-                            durationMillis = 500,
-                            easing = FastOutSlowInEasing
+        HorizontalPager(state = pager, modifier.height(200.dp), reverseLayout = false) { index ->
+
+            val pageOffSet = (pager.currentPage - index) + pager.currentPageOffsetFraction
+
+            val imageSize by animateFloatAsState(
+                targetValue = if (pageOffSet.toDouble() != 0.0) 0.75f else 1f,
+                animationSpec = tween(300), label = ""
+            )
+            Box(modifier = Modifier.clickable { news.itemSnapshotList[index]?.let { onItemClick(it) } }) {
+                AsyncImage(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(15.dp))
+                        .graphicsLayer {
+                            scaleX = imageSize
+                            scaleY = imageSize
+                            shape = RoundedCornerShape(15.dp)
+                            clip = true
+                        },
+                    error = painterResource(id = R.drawable.breaking_news_placeholder),
+                    placeholder = painterResource(id = R.drawable.breaking_news_placeholder),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(news[index]?.urlToImage)
+                        .build(),
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop
+                )
+
+                Text(
+                    text = news[index]?.title.toString(),
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.7f))
+                        .padding(16.dp)
+                        .graphicsLayer {
+                            scaleX = imageSize
+                            scaleY = imageSize
+                            shape = RoundedCornerShape(15.dp)
+                        },
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2
+                )
+            }
+            val key by remember { mutableStateOf(false) }
+            LaunchedEffect(key1 = key) {
+                launch {
+                    delay(3000)
+                    with(pager) {
+                        val target = if (currentPage < pageCount - 1) currentPage + 1 else 0
+                        animateScrollToPage(
+                            page = target,
+                            animationSpec = tween(
+                                durationMillis = 500,
+                                easing = FastOutSlowInEasing
+                            )
                         )
-                    )
+                    }
                 }
             }
+
+
         }
-
-
     }
+
 
 }

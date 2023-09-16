@@ -1,18 +1,12 @@
 package com.example.newsapp.ui.theme.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -23,20 +17,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.navigation
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.newsapp.AppViewModelProvider
-import com.example.newsapp.data.model.NewsUiState
+import com.example.newsapp.data.model.NewsTable
 import com.example.newsapp.ui.theme.NewsTopAppBar
 import com.example.newsapp.ui.theme.NewsViewModel
 import com.example.newsapp.ui.theme.bookmarks.BookMarkScreen
@@ -66,7 +56,7 @@ fun NewsNavigation(
     modifier: Modifier = Modifier,
     viewModel: NewsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val newsState = viewModel.newUiState.collectAsState()
+    val pagingNews = viewModel.pagerFlow.collectAsLazyPagingItems()
     val componentUiState = viewModel.newsUiState.collectAsState()
     var selectedIndex by remember {
         mutableStateOf(0)
@@ -100,11 +90,13 @@ fun NewsNavigation(
             modifier = modifier.padding(innerPadding)
         ) {
             composable(route = NewsAppScreens.HOME.name) {
-                HomeScreen(newsData = newsState.value, onItemClick = {
-                    viewModel.updateCurrentItem(newsTable = it)
-                    navController.navigate(route = NewsAppScreens.DETAIL.name)
+                HomeScreen(
+                    news = pagingNews, onItemClick = {
+                        viewModel.updateCurrentItem(newsTable = it)
+                        navController.navigate(route = NewsAppScreens.DETAIL.name)
 
-                })
+                    }
+                )
             }
 
             composable(route = NewsAppScreens.DETAIL.name) {
@@ -123,7 +115,10 @@ fun NewsNavigation(
                         viewModel.updateSearchTextValue(it)
                     },
                     onSearchClicked = {
-                        viewModel.getSearchItems(newsList = newsState.value, searchItem = it)
+                        viewModel.getSearchItems(
+                            newsList = pagingNews.itemSnapshotList.items,
+                            searchItem = it
+                        )
                         viewModel.insertHistoryItem(it)
                     },
                     searchBarActiveUpdated = {
@@ -134,12 +129,12 @@ fun NewsNavigation(
                     })
             }
             composable(route = NewsAppScreens.BOOKMARKS.name) {
-                BookMarkScreen(favouriteList = newsState.value.filter {
-                    it.favourite
-                }, onItemClick = {
+                BookMarkScreen(favouriteList = pagingNews.itemSnapshotList.filter {
+                    it?.favourite ?: false
+                }) {
                     viewModel.updateCurrentItem(it)
                     navController.navigate(NewsAppScreens.DETAIL.name)
-                })
+                }
             }
         }
     }

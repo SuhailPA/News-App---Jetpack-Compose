@@ -1,10 +1,12 @@
 package com.example.newsapp.data.room
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.example.newsapp.data.model.HistoryTable
 import com.example.newsapp.data.model.NewsTable
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NewsDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun updateNews(news: List<NewsTable>)
 
     @Query("SELECT * FROM newstable")
@@ -34,6 +36,6 @@ interface NewsDao {
     @Query("SELECT * FROM historytable")
     fun getAllHistoryItems(): Flow<List<HistoryTable>>
 
-    @Query("SELECT * FROM newstable WHERE title LIKE '%'||:history")
-    fun getAllItemForSearch(history: String): Flow<List<NewsTable>>
+    @Query("SELECT * FROM newstable")
+    fun pagingSource(): PagingSource<Int, NewsTable>
 }

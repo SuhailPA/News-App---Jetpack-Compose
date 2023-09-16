@@ -1,8 +1,10 @@
 package com.example.newsapp.ui.theme.home
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,10 +16,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,30 +32,52 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.newsapp.R
 import com.example.newsapp.data.model.NewsTable
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    newsData: List<NewsTable>,
-    onItemClick: (NewsTable) -> Unit
+    onItemClick: (NewsTable) -> Unit,
+    news: LazyPagingItems<NewsTable>
 ) {
-    if (newsData.isNotEmpty()) {
-        NewsList(
-            news = newsData,
-            modifier = Modifier.padding(),
-            onItemClick = onItemClick
-        )
-    } else {
-        LoadingErrorScreen(modifier = Modifier.padding())
+    val context = LocalContext.current
+    LaunchedEffect(key1 = news.loadState) {
+        if (news.loadState.refresh is LoadState.Error) {
+            Toast.makeText(
+                context,
+                (news.loadState.refresh as LoadState.Error).error.message,
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
-//    }
+    Box(modifier = modifier.fillMaxSize()) {
+        if (news.loadState.refresh is LoadState.Loading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
+            )
+        } else {
+
+            NewsList(news = news, onItemClick = onItemClick)
+//            LazyColumn(
+//                modifier = Modifier.fillMaxSize(),
+//                contentPadding = PaddingValues(10.dp),
+//                verticalArrangement = Arrangement.spacedBy(10.dp)
+//            ) {
+//                items(news.itemSnapshotList) {
+//                    if (it != null) {
+//                        NewsItem(news = it, onItemClick = onItemClick)
+//                    }
+//                }
+//            }
+        }
+    }
 }
 
 @Composable
@@ -128,7 +154,7 @@ fun AuthorDetails(authorName: String?) {
 @Composable
 fun NewsList(
     modifier: Modifier = Modifier,
-    news: List<NewsTable>,
+    news: LazyPagingItems<NewsTable>,
     onItemClick: (NewsTable) -> Unit
 ) {
     LazyColumn(
@@ -136,24 +162,20 @@ fun NewsList(
         contentPadding = PaddingValues(5.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        item {
-            HorizontalAutoSlider(news = news, onItemClick = onItemClick)
-        }
-        items(items = news, key = { news -> news.title!! }) {
-            NewsItem(news = it, onItemClick = onItemClick)
+        if (news.itemSnapshotList.items.isNotEmpty()) {
+            item {
+                HorizontalAutoSlider(news = news, onItemClick = onItemClick)
+            }
+
+            items(items = news.itemSnapshotList.items) {
+
+                    NewsItem(news = it, onItemClick = onItemClick)
+
+            }
         }
     }
 }
 
-@Composable
-fun LoadingErrorScreen(modifier: Modifier = Modifier) {
-    Image(
-        modifier = modifier.fillMaxSize(),
-        painter = painterResource(id = R.drawable.loading),
-        contentDescription = null,
-        contentScale = ContentScale.FillHeight
-    )
-}
 
 @Preview(showSystemUi = true)
 @Composable

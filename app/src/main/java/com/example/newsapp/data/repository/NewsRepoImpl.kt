@@ -15,5 +15,4 @@ interface NewsRepoImpl {
 
     fun getAllHistoryItems(): Flow<List<HistoryTable>>
 
-    fun getItemForSearch(item :String) : Flow<List<NewsTable>>
 }

@@ -13,7 +13,7 @@ object AppViewModelProvider {
         initializer {
             val application =
                 this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as NewsApplication
-            NewsViewModel(application.container.newsRepository)
+            NewsViewModel(application.container.newsRepository, application.container.pager)
         }
     }
 }
