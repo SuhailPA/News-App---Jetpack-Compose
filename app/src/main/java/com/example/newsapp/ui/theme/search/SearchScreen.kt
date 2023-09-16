@@ -49,7 +49,7 @@ fun SearchScreen(
 
 ) {
     Column(modifier = modifier.fillMaxSize()) {
-        SearchBar(
+        DockedSearchBar(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(5.dp),
