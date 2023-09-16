@@ -33,6 +33,7 @@ class NewsDataContainer(val context: Context) : NewsContainer {
     val newsApi = retrofit.create(NewsAPI::class.java)
 
     override val newsRepository: NewsRepository by lazy {
-        NewsRepository(newsDao = roomDB.newsDao(), newsAPI = newsApi)
+        NewsRepository(roomDb = roomDB, newsAPI = newsApi)
     }
+
 }
