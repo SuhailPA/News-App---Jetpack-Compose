@@ -18,7 +18,7 @@ data class NewsTable(
     val title: String?,
     val url: String?,
     val urlToImage: String?,
-    var favourite : Boolean = false
+    var favourite: Boolean = false
 )
 
 data class NewsUiState(
@@ -33,10 +33,18 @@ data class NewsUiState(
         urlToImage = "",
         favourite = false
     ),
-    val isShowingHomePage : Boolean = true,
-    val currentNavigationItem : NavigationItem = NavigationItem.home,
-    val currentScreen : NewsAppScreens = NewsAppScreens.HOME,
-    val showBackButton : Boolean = false,
-    val searchText : String = "",
-    val searchBarIsActive : Boolean = false
+    val isShowingHomePage: Boolean = true,
+    val currentNavigationItem: NavigationItem = NavigationItem.home,
+    val currentScreen: NewsAppScreens = NewsAppScreens.HOME,
+    val showBackButton: Boolean = false,
+    val searchText: String = "",
+    val searchBarIsActive: Boolean = false,
+    val historyItems : List<HistoryTable> = listOf(HistoryTable("")),
+    val searchItems : List<NewsTable> = listOf()
+)
+
+@Entity
+data class HistoryTable(
+    @PrimaryKey
+    val historyItem: String
 )

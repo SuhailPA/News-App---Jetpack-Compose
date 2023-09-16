@@ -1,7 +1,6 @@
 package com.example.newsapp.data.repository
 
-import com.example.newsapp.data.model.Article
-import com.example.newsapp.data.model.NewsResponseModel
+import com.example.newsapp.data.model.HistoryTable
 import com.example.newsapp.data.model.NewsTable
 import kotlinx.coroutines.flow.Flow
 
@@ -12,4 +11,9 @@ interface NewsRepoImpl {
 
     suspend fun triggeredFavorite(newsTable: NewsTable)
 
+    suspend fun insertHistoryItem(historyItem: HistoryTable)
+
+    fun getAllHistoryItems(): Flow<List<HistoryTable>>
+
+    fun getItemForSearch(item :String) : Flow<List<NewsTable>>
 }

@@ -1,8 +1,6 @@
 package com.example.newsapp.data.repository
 
-import android.util.Log
-import com.example.newsapp.data.model.Article
-import com.example.newsapp.data.model.NewsResponseModel
+import com.example.newsapp.data.model.HistoryTable
 import com.example.newsapp.data.model.NewsTable
 import com.example.newsapp.data.retrofit.NewsAPI
 import com.example.newsapp.data.room.NewsDao
@@ -31,5 +29,17 @@ class NewsRepository(val newsDao: NewsDao, val newsAPI: NewsAPI) : NewsRepoImpl 
 
     override suspend fun triggeredFavorite(newsTable: NewsTable) {
         newsDao.triggeredFavorite(newsTable)
+    }
+
+    override suspend fun insertHistoryItem(historyItem: HistoryTable) {
+        newsDao.insertHistory(historyItem)
+    }
+
+    override fun getAllHistoryItems(): Flow<List<HistoryTable>> {
+        return newsDao.getAllHistoryItems()
+    }
+
+    override fun getItemForSearch(item: String): Flow<List<NewsTable>> {
+        return newsDao.getAllItemForSearch(item)
     }
 }

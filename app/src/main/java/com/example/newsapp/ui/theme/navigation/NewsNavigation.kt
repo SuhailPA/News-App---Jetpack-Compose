@@ -71,7 +71,10 @@ fun NewsNavigation(
     var selectedIndex by remember {
         mutableStateOf(0)
     }
+
+    val historyItems = viewModel.historyItems.collectAsState()
     val backStackEntry by navController.currentBackStackEntryAsState()
+
 
     val currentScreen = NewsAppScreens.valueOf(
         backStackEntry?.destination?.route ?: NewsAppScreens.HOME.name
@@ -113,13 +116,21 @@ fun NewsNavigation(
                 })
             }
             composable(route = NewsAppScreens.SEARCH.name) {
-                SearchScreen(componentUiState = componentUiState.value,
+                SearchScreen(
+                    componentUiState = componentUiState.value,
+                    historyItems = historyItems.value,
                     onValueUpdated = {
                         viewModel.updateSearchTextValue(it)
                     },
-                    onSearchClicked = {},
+                    onSearchClicked = {
+                        viewModel.getSearchItems(newsList = newsState.value, searchItem = it)
+                        viewModel.insertHistoryItem(it)
+                    },
                     searchBarActiveUpdated = {
                         viewModel.updateSearchActiveButton(it)
+                    },
+                    onClearTrailItems = {
+                        viewModel.updateTheSearchList()
                     })
             }
             composable(route = NewsAppScreens.BOOKMARKS.name) {
@@ -147,7 +158,7 @@ fun BottomNavigationBar(
             navigationItem = NewsAppScreens.SEARCH, icon = Icons.Default.Search, text = "Search"
         ), NavigationItemContent(
             navigationItem = NewsAppScreens.BOOKMARKS,
-            icon = Icons.Default.Favorite,
+            icon = Icons.Default.FavoriteBorder,
             text = "BookMarks"
         )
     )

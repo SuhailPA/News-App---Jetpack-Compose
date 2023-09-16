@@ -1,12 +1,11 @@
 package com.example.newsapp.data.room
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.newsapp.data.model.Article
-import com.example.newsapp.data.model.NewsResponseModel
+import com.example.newsapp.data.model.HistoryTable
 import com.example.newsapp.data.model.NewsTable
 import kotlinx.coroutines.flow.Flow
 
@@ -29,4 +28,12 @@ interface NewsDao {
     @Update
     suspend fun triggeredFavorite(newsTable: NewsTable)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertHistory(historyItem: HistoryTable)
+
+    @Query("SELECT * FROM historytable")
+    fun getAllHistoryItems(): Flow<List<HistoryTable>>
+
+    @Query("SELECT * FROM newstable WHERE title LIKE '%'||:history")
+    fun getAllItemForSearch(history: String): Flow<List<NewsTable>>
 }

@@ -1,18 +1,17 @@
 package com.example.newsapp.ui.theme
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newsapp.data.model.Article
-import com.example.newsapp.data.model.NewsResponseModel
+import com.example.newsapp.data.model.HistoryTable
 import com.example.newsapp.data.model.NewsTable
 import com.example.newsapp.data.model.NewsUiState
 import com.example.newsapp.data.repository.NewsRepository
-import com.example.newsapp.ui.theme.navigation.NavigationItem
-import com.example.newsapp.ui.theme.navigation.NewsAppScreens
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,6 +20,9 @@ class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
 
     private val _newsUiState = MutableStateFlow(NewsUiState())
     val newsUiState: StateFlow<NewsUiState> = _newsUiState
+
+    private val _yourStateFlow = MutableStateFlow<List<NewsTable>>(emptyList())
+    val yourStateFlow: StateFlow<List<NewsTable>> = _yourStateFlow.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -32,6 +34,12 @@ class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = listOf<NewsTable>()
+    )
+
+    val historyItems: StateFlow<List<HistoryTable>> = repository.getAllHistoryItems().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = listOf()
     )
 
     fun updateCurrentItem(newsTable: NewsTable) {
@@ -70,4 +78,31 @@ class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
             )
         }
     }
+
+    fun insertHistoryItem(historyItem: String) {
+        val item = HistoryTable(historyItem)
+        viewModelScope.launch {
+            repository.insertHistoryItem(item)
+        }
+    }
+
+    lateinit var item: StateFlow<List<NewsTable>>
+    fun getSearchItems(newsList: List<NewsTable>, searchItem: String) {
+        _newsUiState.update { currentState ->
+            currentState.copy(
+                searchItems = newsList.filter {
+                    it.title!!.contains(searchItem, ignoreCase = true)
+                }
+            )
+        }
+    }
+
+    fun updateTheSearchList() {
+        _newsUiState.update { currentState ->
+            currentState.copy(
+                searchItems = emptyList()
+            )
+        }
+    }
+
 }

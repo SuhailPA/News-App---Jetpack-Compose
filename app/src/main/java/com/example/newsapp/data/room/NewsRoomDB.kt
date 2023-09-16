@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.newsapp.data.model.HistoryTable
 import com.example.newsapp.data.model.NewsTable
 
-@Database(entities = [NewsTable::class], version = 1)
+@Database(entities = [NewsTable::class, HistoryTable::class], version = 1)
 abstract class NewsRoomDB : RoomDatabase() {
 
     abstract fun newsDao() : NewsDao
