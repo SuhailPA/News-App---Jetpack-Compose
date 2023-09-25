@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.theme.bookmarks
+package com.example.newsapp.ui.bookmarks
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.newsapp.data.model.NewsTable
-import com.example.newsapp.ui.theme.home.NewsItem
+import com.example.newsapp.ui.home.NewsItem
 
 @Composable
 fun BookMarkScreen(
