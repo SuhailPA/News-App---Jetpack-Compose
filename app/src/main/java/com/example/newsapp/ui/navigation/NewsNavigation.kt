@@ -1,18 +1,12 @@
-package com.example.newsapp.ui.theme.navigation
+package com.example.newsapp.ui.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -23,26 +17,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.navigation
 import com.example.newsapp.AppViewModelProvider
-import com.example.newsapp.data.model.NewsUiState
-import com.example.newsapp.ui.theme.NewsTopAppBar
-import com.example.newsapp.ui.theme.NewsViewModel
-import com.example.newsapp.ui.theme.bookmarks.BookMarkScreen
-import com.example.newsapp.ui.theme.detail.DetailScreen
-import com.example.newsapp.ui.theme.home.HomeScreen
-import com.example.newsapp.ui.theme.search.SearchScreen
+import com.example.newsapp.ui.NewsTopAppBar
+import com.example.newsapp.ui.NewsViewModel
+import com.example.newsapp.ui.bookmarks.BookMarkScreen
+import com.example.newsapp.ui.detail.DetailScreen
+import com.example.newsapp.ui.home.HomeScreen
+import com.example.newsapp.ui.search.SearchScreen
 
 enum class NewsAppScreens(name: String, icon: ImageVector?) {
     HOME(name = "Home", icon = Icons.Default.Home), DETAIL(name = "Detail", icon = null), BOOKMARKS(
