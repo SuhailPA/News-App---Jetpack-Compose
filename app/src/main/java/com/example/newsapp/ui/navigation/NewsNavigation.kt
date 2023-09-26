@@ -61,6 +61,7 @@ fun NewsNavigation(
 ) {
     val pagingNews = viewModel.pagerFlow.collectAsLazyPagingItems()
     val componentUiState = viewModel.newsUiState.collectAsState()
+    val notificationState = viewModel.notificationState.collectAsState()
     var selectedIndex by remember {
         mutableStateOf(0)
     }
@@ -78,7 +79,7 @@ fun NewsNavigation(
             newScreen = currentScreen,
             scrollBehavior = scrollBehavior,
             navController = navController
-            )
+        )
     }, bottomBar = {
         if (navController.currentDestination?.route != NewsAppScreens.DETAIL.name) BottomNavigationBar(
             currentScreen = currentScreen,
@@ -135,7 +136,11 @@ fun NewsNavigation(
             }
             composable(route = NewsAppScreens.NOTIFICATION.name) {
                 NotificationScreen(
-                    onUserClickBack = { navController.navigateUp() }
+                    onUserClickBack = { navController.navigateUp() },
+                    onTitleValueUpdated = { viewModel.notificationScreenTitleUpdate(it) },
+                    onDescriptionValueUpdated = { viewModel.notificationScreenDescriptionUpdate(it) },
+                    onButtonClick = { viewModel.sendPushNotification() },
+                    notificationState = notificationState.value
                 )
             }
             composable(route = NewsAppScreens.BOOKMARKS.name) {

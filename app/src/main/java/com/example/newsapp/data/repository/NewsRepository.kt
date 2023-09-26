@@ -1,13 +1,20 @@
 package com.example.newsapp.data.repository
 
 import com.example.newsapp.data.model.HistoryTable
+import com.example.newsapp.data.model.MainPushModel
 import com.example.newsapp.data.model.NewsTable
 import com.example.newsapp.data.retrofit.NewsAPI
-import com.example.newsapp.data.room.NewsDao
+import com.example.newsapp.data.retrofit.NotificationAPI
 import com.example.newsapp.data.room.NewsRoomDB
 import kotlinx.coroutines.flow.Flow
+import okhttp3.ResponseBody
+import retrofit2.Response
 
-class NewsRepository(private val roomDb: NewsRoomDB, val newsAPI: NewsAPI) : NewsRepoImpl {
+class NewsRepository(
+    private val roomDb: NewsRoomDB,
+    val newsAPI: NewsAPI,
+    val notificationAPI: NotificationAPI
+) : NewsRepoImpl {
     override fun getAllNews(): Flow<List<NewsTable>> = roomDb.newsDao().getAllNews()
 
     override suspend fun updateNewsContent() {
@@ -44,6 +51,10 @@ class NewsRepository(private val roomDb: NewsRoomDB, val newsAPI: NewsAPI) : New
 
     override fun getAllHistoryItems(): Flow<List<HistoryTable>> {
         return roomDb.newsDao().getAllHistoryItems()
+    }
+
+    override suspend fun sendNotification(notificationData: MainPushModel): Response<ResponseBody> {
+        return notificationAPI.postNotification(notificationData)
     }
 
 }

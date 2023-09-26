@@ -1,6 +1,7 @@
 package com.example.newsapp.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,36 +9,49 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.newsapp.data.model.NotificationData
 import com.example.newsapp.ui.theme.NewsAppTheme
 
 @Composable
 fun NotificationScreen(
     modifier: Modifier = Modifier,
-    onUserClickBack: () -> Unit
+    onUserClickBack: () -> Unit,
+    onTitleValueUpdated: (String) -> Unit,
+    onDescriptionValueUpdated: (String) -> Unit,
+    onButtonClick : () -> Unit,
+    notificationState: NotificationData
 ) {
     BackHandler {
         onUserClickBack()
     }
-    var textValue by remember {
-        mutableStateOf("")
-    }
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center) {
         TextInputEditText(
             onValueChange = {
-                textValue = it
-            }, textValue = textValue,
+                onTitleValueUpdated(it)
+            }, textValue = notificationState.title,
             hint = "Title"
         )
+
+        TextInputEditText(
+            onValueChange = {
+                onDescriptionValueUpdated(it)
+            }, textValue = notificationState.body,
+            hint = "Description"
+        )
+
+        TextButton(onClick = { onButtonClick() }) {
+            Text(text = "Sent Notification")
+        }
     }
+
+
 }
 
 @Composable
