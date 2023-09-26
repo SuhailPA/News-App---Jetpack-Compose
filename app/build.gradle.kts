@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp") version "1.8.21-1.0.11"
     id ("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -93,4 +94,8 @@ dependencies {
     //Pagination
     implementation ("androidx.paging:paging-runtime-ktx:3.2.1")
     implementation ("androidx.paging:paging-compose:3.2.1")
+
+    //Firebase Push Notification
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-messaging-ktx")
 }

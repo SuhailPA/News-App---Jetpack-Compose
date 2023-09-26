@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.theme.navigation
+package com.example.newsapp.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -26,19 +26,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.newsapp.AppViewModelProvider
-import com.example.newsapp.data.model.NewsTable
-import com.example.newsapp.ui.theme.NewsTopAppBar
-import com.example.newsapp.ui.theme.NewsViewModel
-import com.example.newsapp.ui.theme.bookmarks.BookMarkScreen
-import com.example.newsapp.ui.theme.detail.DetailScreen
-import com.example.newsapp.ui.theme.home.HomeScreen
-import com.example.newsapp.ui.theme.search.SearchScreen
+import com.example.newsapp.ui.NewsTopAppBar
+import com.example.newsapp.ui.NewsViewModel
+import com.example.newsapp.ui.NotificationScreen
+import com.example.newsapp.ui.bookmarks.BookMarkScreen
+import com.example.newsapp.ui.detail.DetailScreen
+import com.example.newsapp.ui.home.HomeScreen
+import com.example.newsapp.ui.search.SearchScreen
 
 enum class NewsAppScreens(name: String, icon: ImageVector?) {
-    HOME(name = "Home", icon = Icons.Default.Home), DETAIL(name = "Detail", icon = null), BOOKMARKS(
+    HOME(name = "Home", icon = Icons.Default.Home),
+    DETAIL(name = "Detail", icon = null),
+    BOOKMARKS(
         name = "Book marks", Icons.Default.FavoriteBorder
     ),
-    SEARCH(name = "Search", icon = Icons.Default.Search)
+    SEARCH(name = "Search", icon = Icons.Default.Search),
+    NOTIFICATION(name = "Notification", icon = null)
 }
 
 enum class NavigationItem {
@@ -72,8 +75,10 @@ fun NewsNavigation(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(topBar = {
         if (navController.currentDestination?.route != NewsAppScreens.DETAIL.name) NewsTopAppBar(
-            newScreen = currentScreen, scrollBehavior = scrollBehavior
-        )
+            newScreen = currentScreen,
+            scrollBehavior = scrollBehavior,
+            navController = navController
+            )
     }, bottomBar = {
         if (navController.currentDestination?.route != NewsAppScreens.DETAIL.name) BottomNavigationBar(
             currentScreen = currentScreen,
@@ -127,6 +132,11 @@ fun NewsNavigation(
                     onClearTrailItems = {
                         viewModel.updateTheSearchList()
                     })
+            }
+            composable(route = NewsAppScreens.NOTIFICATION.name) {
+                NotificationScreen(
+                    onUserClickBack = { navController.navigateUp() }
+                )
             }
             composable(route = NewsAppScreens.BOOKMARKS.name) {
                 BookMarkScreen(favouriteList = pagingNews.itemSnapshotList.filter {

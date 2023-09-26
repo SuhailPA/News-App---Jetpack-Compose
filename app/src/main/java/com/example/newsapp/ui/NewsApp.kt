@@ -1,25 +1,22 @@
-package com.example.newsapp.ui.theme
+package com.example.newsapp.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.newsapp.ui.theme.navigation.NewsAppScreens
-import com.example.newsapp.ui.theme.navigation.NewsNavigation
+import com.example.newsapp.ui.navigation.NewsAppScreens
+import com.example.newsapp.ui.navigation.NewsNavigation
 
 
 @Composable
@@ -33,7 +30,8 @@ fun NewsApp(navController: NavHostController = rememberNavController()) {
 fun NewsTopAppBar(
     modifier: Modifier = Modifier,
     newScreen: NewsAppScreens,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    navController: NavHostController
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -47,7 +45,22 @@ fun NewsTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary
-        )
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        navigationIcon = {
+            if (navController.currentDestination?.route == NewsAppScreens.NOTIFICATION.name) {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                }
+            }
+        }, actions = {
+            IconButton(onClick = { navController.navigate(route = NewsAppScreens.NOTIFICATION.name) }) {
+                Icon(
+                    imageVector = Icons.Default.Notifications,
+                    contentDescription = null
+                )
+            }
+        }
     )
 }
