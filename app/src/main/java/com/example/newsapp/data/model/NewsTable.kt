@@ -2,8 +2,8 @@ package com.example.newsapp.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.newsapp.ui.theme.navigation.NavigationItem
-import com.example.newsapp.ui.theme.navigation.NewsAppScreens
+import com.example.newsapp.ui.navigation.NavigationItem
+import com.example.newsapp.ui.navigation.NewsAppScreens
 import kotlinx.serialization.Serializable
 
 @Serializable

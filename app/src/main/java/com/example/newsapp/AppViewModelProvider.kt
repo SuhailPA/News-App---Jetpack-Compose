@@ -3,9 +3,7 @@ package com.example.newsapp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.newsapp.di.NewsContainer
-import com.example.newsapp.di.NewsDataContainer
-import com.example.newsapp.ui.theme.NewsViewModel
+import com.example.newsapp.ui.NewsViewModel
 
 object AppViewModelProvider {
 

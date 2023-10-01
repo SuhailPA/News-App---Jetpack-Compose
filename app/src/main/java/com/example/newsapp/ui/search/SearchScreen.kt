@@ -1,7 +1,6 @@
-package com.example.newsapp.ui.theme.search
+package com.example.newsapp.ui.search
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,7 +19,6 @@ import androidx.compose.material.icons.filled.Search
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SearchBar
 
 import androidx.compose.runtime.Composable
 
@@ -32,8 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.newsapp.data.model.HistoryTable
-import com.example.newsapp.ui.theme.NewsApp
-import com.example.newsapp.ui.theme.home.NewsItem
+import com.example.newsapp.ui.home.NewsItem
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
