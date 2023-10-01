@@ -40,7 +40,8 @@ data class NewsUiState(
     val searchText: String = "",
     val searchBarIsActive: Boolean = false,
     val historyItems : List<HistoryTable> = listOf(HistoryTable("")),
-    val searchItems : List<NewsTable> = listOf()
+    val searchItems : List<NewsTable> = listOf(),
+    val rationalMessageVisible : Boolean = true
 )
 
 @Entity

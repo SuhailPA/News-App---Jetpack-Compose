@@ -1,5 +1,9 @@
 package com.example.newsapp.ui.navigation
 
+import android.content.Intent
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -60,7 +64,9 @@ fun NewsNavigation(
     var selectedIndex by remember {
         mutableStateOf(0)
     }
-
+    val openSettings =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
+    }
     val historyItems = viewModel.historyItems.collectAsState()
     val backStackEntry by navController.currentBackStackEntryAsState()
 
@@ -93,7 +99,17 @@ fun NewsNavigation(
                     news = pagingNews, onItemClick = {
                         viewModel.updateCurrentItem(newsTable = it)
                         navController.navigate(route = NewsAppScreens.DETAIL.name)
-
+                    },
+                    newsUiState = componentUiState.value,
+                    onButtonClick = {
+                        viewModel.updateRationalValue()
+                        if (it){
+                            val intent = Intent().apply {
+                                action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                                putExtra(Settings.EXTRA_APP_PACKAGE, "com.example.newsapp")
+                            }
+                            openSettings.launch(intent)
+                        }
                     }
                 )
             }

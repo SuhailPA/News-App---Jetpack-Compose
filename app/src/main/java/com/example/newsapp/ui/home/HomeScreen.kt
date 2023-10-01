@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -29,10 +32,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,6 +50,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.newsapp.R
 import com.example.newsapp.data.model.NewsTable
+import com.example.newsapp.data.model.NewsUiState
+import com.example.newsapp.ui.theme.NewsAppTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -54,9 +62,11 @@ import com.google.accompanist.permissions.shouldShowRationale
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onItemClick: (NewsTable) -> Unit,
-    news: LazyPagingItems<NewsTable>
+    news: LazyPagingItems<NewsTable>,
+    newsUiState: NewsUiState,
+    onButtonClick: (Boolean) -> Unit
+
 ) {
-    PermissionCheck()
     val context = LocalContext.current
     LaunchedEffect(key1 = news.loadState) {
         if (news.loadState.refresh is LoadState.Error) {
@@ -68,15 +78,17 @@ fun HomeScreen(
         }
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         if (news.loadState.refresh is LoadState.Loading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center)
             )
         } else {
-
             NewsList(news = news, onItemClick = onItemClick)
         }
+        PermissionCheck(modifier = Modifier.align(Alignment.Center),
+            componentUiState = newsUiState,
+            onButtonClick = { onButtonClick(it) })
     }
 }
 
@@ -113,7 +125,11 @@ fun NewsItem(modifier: Modifier = Modifier, news: NewsTable, onItemClick: (NewsT
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PermissionCheck() {
+fun PermissionCheck(
+    modifier: Modifier = Modifier,
+    componentUiState: NewsUiState,
+    onButtonClick: (Boolean) -> Unit
+) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 
         val permissionState =
@@ -138,27 +154,57 @@ fun PermissionCheck() {
         })
 
         when {
-            permissionState.status.shouldShowRationale -> {
-                ExplainingUserForPermissionRequirement()
-            }
-
-            !permissionState.status.isGranted && !permissionState.status.shouldShowRationale -> {
-                Snackbar(modifier = Modifier.padding(5.dp)) {
-                    Text(text = "No Notifications will be sent to you.")
-                }
+            permissionState.status.shouldShowRationale &&
+                    !permissionState.status.isGranted
+                    && componentUiState.rationalMessageVisible -> {
+                ExplainingUserForPermissionRequirement(
+                    modifier = modifier,
+                    onButtonClick = {
+                        onButtonClick(it)
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun ExplainingUserForPermissionRequirement() {
-    Card {
-        Column(modifier = Modifier.padding(5.dp)) {
+fun ExplainingUserForPermissionRequirement(
+    modifier: Modifier = Modifier,
+    onButtonClick: (Boolean) -> Unit
+) {
+    Card(
+        modifier = modifier.padding(5.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiary),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(5.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
-                modifier = Modifier.padding(5.dp),
+                modifier = Modifier
+                    .padding(5.dp)
+                    .align(Alignment.CenterHorizontally),
+                textAlign = TextAlign.Center,
                 text = "For getting notification you may need to allow the permission from Settings"
             )
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                TextButton(onClick = { onButtonClick(true) }, modifier = Modifier.padding(5.dp)) {
+                    Text(
+                        text = "Navigate to Settings",
+                        color = Color.White
+                    )
+                }
+                TextButton(onClick = { onButtonClick(false) }, modifier = Modifier.padding(5.dp)) {
+                    Text(
+                        text = "Cancel",
+                        color = Color.White
+                    )
+                }
+            }
         }
     }
 }
@@ -227,19 +273,20 @@ fun NewsList(
     }
 }
 
+//
+//@Preview(showSystemUi = true)
+//@Composable
+//fun PreviewNewsItem() {
+//    NewsItem(
+//        news = NewsTable(
+//            author = "Suhail",
+//            content = "Test Content",
+//            description = "Test Description",
+//            publishedAt = "Monday",
+//            title = "Test Title",
+//            url = "Test URl",
+//            urlToImage = "Test Image"
+//        ), onItemClick = {}
+//    )
+//}
 
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewNewsItem() {
-    NewsItem(
-        news = NewsTable(
-            author = "Suhail",
-            content = "Test Content",
-            description = "Test Description",
-            publishedAt = "Monday",
-            title = "Test Title",
-            url = "Test URl",
-            urlToImage = "Test Image"
-        ), onItemClick = {}
-    )
-}

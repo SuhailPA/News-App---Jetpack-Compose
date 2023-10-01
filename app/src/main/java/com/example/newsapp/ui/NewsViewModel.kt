@@ -76,6 +76,14 @@ class NewsViewModel(
         }
     }
 
+    fun updateRationalValue(){
+        _newsUiState.update {
+            currentState -> currentState.copy(
+                rationalMessageVisible = false
+            )
+        }
+    }
+
     lateinit var item: StateFlow<List<NewsTable>>
     fun getSearchItems(newsList: List<NewsTable>, searchItem: String) {
         _newsUiState.update { currentState ->
