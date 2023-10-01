@@ -53,7 +53,7 @@ fun DetailScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(color = MaterialTheme.colorScheme.background)
     ) {
         Column {
             AsyncImage(
@@ -93,7 +93,7 @@ fun HeaderPart(modifier: Modifier = Modifier, navigateUp: () -> Unit, isFavourit
                 .padding(15.dp)
                 .size(36.dp)
                 .background(
-                    color = Color.White.copy(alpha = 0.75f),
+                    color = MaterialTheme.colorScheme.background.copy(alpha = 0.75f),
                     shape = RoundedCornerShape(20.dp)
                 )
         ) {
@@ -111,7 +111,7 @@ fun HeaderPart(modifier: Modifier = Modifier, navigateUp: () -> Unit, isFavourit
                 .padding(15.dp)
                 .size(36.dp)
                 .background(
-                    color = Color.White.copy(alpha = 0.75f),
+                    color = MaterialTheme.colorScheme.background.copy(alpha = 0.75f),
                     shape = RoundedCornerShape(20.dp)
                 )
         ) {
